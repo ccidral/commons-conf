@@ -3,7 +3,7 @@
 
     <groupId>commons</groupId>
     <artifactId>commons-conf</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
     <name>Commons Configuration</name>
     <url>https://github.com/ccidral/commons-conf</url>
