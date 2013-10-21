@@ -1,5 +1,5 @@
-commons-conf
-============
+Commons Configuration
+=====================
 
 Usage:
 
