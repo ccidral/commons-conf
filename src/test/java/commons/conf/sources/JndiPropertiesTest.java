@@ -6,9 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.naming.Context;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-import javax.naming.NoInitialContextException;
 import java.util.Properties;
 
 import static commons.conf.util.PropertiesBuilder.properties;
@@ -28,12 +26,8 @@ public class JndiPropertiesTest {
         source = new JndiProperties("foobar", context);
     }
 
-    private void given_that_jndi_context_is_unavailable() throws NamingException {
-        when(context.lookup("foobar")).thenThrow(new NoInitialContextException());
-    }
-
-    private void given_that_jndi_name_is_not_found() throws NamingException {
-        when(context.lookup("foobar")).thenThrow(new NameNotFoundException());
+    private void given_that_a_naming_exception_is_thrown_on_attempt_to_lookup_name() throws NamingException {
+        when(context.lookup("foobar")).thenThrow(new NamingException());
     }
 
     private void given_that_jndi_name_is_bound_to(Properties properties) throws NamingException {
@@ -41,14 +35,8 @@ public class JndiPropertiesTest {
     }
 
     @Test
-    public void test_source_is_unavailable_when_jndi_context_is_unavailable() throws Throwable {
-        given_that_jndi_context_is_unavailable();
-        assertFalse(source.isAvailable());
-    }
-
-    @Test
-    public void test_source_is_unavailable_when_jndi_name_is_not_found() throws Throwable {
-        given_that_jndi_name_is_not_found();
+    public void test_source_is_unavailable_when_jndi_name_cannot_be_looked_up() throws Throwable {
+        given_that_a_naming_exception_is_thrown_on_attempt_to_lookup_name();
         assertFalse(source.isAvailable());
     }
 
@@ -60,7 +48,7 @@ public class JndiPropertiesTest {
 
     @Test(expected = UnavailablePropertiesSourceException.class)
     public void test_throw_exception_on_attempt_to_get_properties_from_unavailable_source() throws Throwable {
-        given_that_jndi_name_is_not_found();
+        given_that_a_naming_exception_is_thrown_on_attempt_to_lookup_name();
         source.getProperties();
     }
 

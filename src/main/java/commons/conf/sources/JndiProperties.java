@@ -3,17 +3,18 @@ package commons.conf.sources;
 import commons.conf.ConfigurationException;
 import commons.conf.PropertiesSource;
 import commons.conf.UnavailablePropertiesSourceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.Context;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-import javax.naming.NoInitialContextException;
 import java.util.Properties;
 
 public class JndiProperties implements PropertiesSource {
 
     private final String jndiName;
     private final Context context;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public JndiProperties(String jndiName, Context context) {
         this.jndiName = jndiName;
@@ -50,14 +51,9 @@ public class JndiProperties implements PropertiesSource {
         try {
             context.lookup(jndiName);
 
-        } catch (NoInitialContextException notFound) {
-            return false;
-
-        } catch (NameNotFoundException notFound) {
-            return false;
-
         } catch (NamingException e) {
-            throw new ConfigurationException(e);
+            logger.warn("JNDI name '" + jndiName + "' could not be looked up", e);
+            return false;
         }
 
         return true;
